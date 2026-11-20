@@ -1,0 +1,32 @@
+[package]
+name = "usb-stack"
+version = "0.1.0"
+edition = "2024"
+rust-version = "1.85"
+readme = "README.md"
+repository = "https://github.com/snple/usb-stack"
+documentation = "https://docs.rs/usb-stack"
+license = "MIT OR Apache-2.0"
+description = "MCU-independent USB device stack core: bus trait, control pipe and classes (CDC-ACM, HID, GS_USB, i2c-tiny-usb, UAC 1.0)"
+keywords = ["usb", "embedded", "no-std", "cdc", "hid"]
+categories = ["embedded", "hardware-support", "no-std"]
+include = [
+    "/src/**/*.rs",
+    "/tests/**/*.rs",
+    "/CHANGELOG.md",
+    "/Cargo.toml",
+    "/LICENSE-APACHE",
+    "/LICENSE-MIT",
+    "/README.md",
+]
+
+[dependencies]
+defmt = { version = "1", optional = true }
+
+[features]
+# Logging is opt-in: the HAL crates decide whether to pull in `defmt`.
+default = []
+defmt = ["dep:defmt"]
+
+[package.metadata.docs.rs]
+all-features = true
