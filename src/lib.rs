@@ -41,30 +41,16 @@ pub mod log {
 
 // ── Modules ──────────────────────────────────────────────────────────────────
 
-pub mod bus;
-pub mod class;
-pub mod control;
 pub mod descriptor;
 pub mod device;
 pub mod endpoint;
-pub mod error;
-
-// ── Re-exports ────────────────────────────────────────────────────────────────
-
-pub use bus::{InterfaceNumber, PollResult, StringIndex, UsbBus, UsbBusAllocator};
-pub use class::UsbClass;
-pub use descriptor::DescriptorWriter;
-pub use device::{DeviceInfo, DeviceState, UsbDevice, UsbDeviceBuilder};
-pub use endpoint::{
-    Direction, Endpoint, EndpointAddress, EndpointIn, EndpointOut, EndpointType, In,
-    IsoSynchronization, IsoUsage, Out,
-};
-pub use error::{UsbError, UsbResult};
+pub mod host;
+pub mod request;
 
 // ── Crate-level constants ─────────────────────────────────────────────────────
 
-/// Maximum number of endpoints the stack can track (endpoint numbers 0–15,
-/// IN and OUT). Peripheral implementations may support fewer.
+/// Maximum number of endpoints the device stack can track (endpoint numbers
+/// 0–15, IN and OUT). Peripheral implementations may support fewer.
 pub const MAX_ENDPOINTS: usize = 16;
 
 /// Maximum packet size for EP0 (full-speed USB 2.0).

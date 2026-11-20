@@ -1,14 +1,14 @@
 [package]
 name = "usb-stack"
-version = "0.1.0"
+version = "0.2.0"
 edition = "2024"
-rust-version = "1.85"
+rust-version = "1.100"
 readme = "README.md"
 repository = "https://github.com/snple/usb-stack"
 documentation = "https://docs.rs/usb-stack"
 license = "MIT OR Apache-2.0"
-description = "MCU-independent USB device stack core: bus trait, control pipe and classes (CDC-ACM, HID, GS_USB, i2c-tiny-usb, UAC 1.0)"
-keywords = ["usb", "embedded", "no-std", "cdc", "hid"]
+description = "MCU-independent USB device and host stack core: bus traits, control transfers, enumeration, classes (CDC-ACM, HID, GS_USB, i2c-tiny-usb, UAC 1.0) and a HID host"
+keywords = ["usb", "embedded", "no-std", "cdc", "hid", "host"]
 categories = ["embedded", "hardware-support", "no-std"]
 include = [
     "/src/**/*.rs",

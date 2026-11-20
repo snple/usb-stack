@@ -71,9 +71,9 @@
 //! }
 //! ```
 
-use crate::bus::UsbBus;
-use crate::class::hid::{HidDevice, HidSpec, ReportType};
-use crate::endpoint::EndpointIn;
+use crate::device::bus::UsbBus;
+use crate::device::class::hid::{HidDevice, HidSpec, ReportType};
+use crate::device::endpoint::EndpointIn;
 
 // ─── Usage tables ─────────────────────────────────────────────────────────────
 
@@ -1090,7 +1090,7 @@ impl<B: UsbBus> HidDevice<B> for PowerDevice {
     /// Send the queued input reports, status first.
     ///
     /// A report the endpoint cannot take yet
-    /// ([`WouldBlock`](crate::error::UsbError::WouldBlock)) stays queued and is
+    /// ([`WouldBlock`](crate::device::error::UsbError::WouldBlock)) stays queued and is
     /// retried on the next poll.
     fn poll(&mut self, input: &EndpointIn<'_, B>) {
         if self.pending_input & PENDING_STATUS != 0 {

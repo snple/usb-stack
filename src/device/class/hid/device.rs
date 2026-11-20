@@ -1,8 +1,8 @@
 //! [`HidDevice`] — what a HID function has to provide.
 
-use crate::bus::UsbBus;
-use crate::class::hid::{hid_protocol, hid_subclass};
-use crate::endpoint::EndpointIn;
+use crate::device::bus::UsbBus;
+use crate::device::class::hid::{hid_protocol, hid_subclass};
+use crate::device::endpoint::EndpointIn;
 
 // ─── Report type ─────────────────────────────────────────────────────────────
 
@@ -197,7 +197,7 @@ pub trait HidDevice<B: UsbBus> {
     /// Called on every device poll while configured.
     ///
     /// Push input reports with `input`; a report that cannot be sent yet
-    /// ([`WouldBlock`](crate::error::UsbError::WouldBlock)) stays the device's
+    /// ([`WouldBlock`](crate::device::error::UsbError::WouldBlock)) stays the device's
     /// responsibility to retry on the next call.
     fn poll(&mut self, _input: &EndpointIn<'_, B>) {}
 }

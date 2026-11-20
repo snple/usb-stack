@@ -43,14 +43,14 @@
 //! }
 //! ```
 
-use crate::bus::{InterfaceNumber, UsbBus, UsbBusAllocator};
-use crate::class::UsbClass;
-use crate::control::{ControlIn, ControlOut, Recipient, RequestType};
-use crate::descriptor::DescriptorWriter;
-use crate::endpoint::{
-    EndpointAddress, EndpointIn, EndpointOut, EndpointType, IsoSynchronization, IsoUsage,
-};
-use crate::error::{UsbError, UsbResult};
+use crate::device::bus::{InterfaceNumber, UsbBus, UsbBusAllocator};
+use crate::device::class::UsbClass;
+use crate::device::control::{ControlIn, ControlOut};
+use crate::device::descriptor::DescriptorWriter;
+use crate::device::endpoint::{EndpointIn, EndpointOut};
+use crate::device::error::{UsbError, UsbResult};
+use crate::endpoint::{EndpointAddress, EndpointType, IsoSynchronization, IsoUsage};
+use crate::request::{Recipient, RequestType};
 
 // ─── Terminal types (USB Audio 1.0) ──────────────────────────────────────────
 

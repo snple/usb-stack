@@ -18,11 +18,11 @@ pub mod hid;
 pub mod i2c_tiny_usb;
 pub mod uac;
 
-use crate::bus::{InterfaceNumber, StringIndex, UsbBus};
-use crate::control::{ControlIn, ControlOut};
-use crate::descriptor::DescriptorWriter;
+use crate::device::bus::{InterfaceNumber, StringIndex, UsbBus};
+use crate::device::control::{ControlIn, ControlOut};
+use crate::device::descriptor::DescriptorWriter;
+use crate::device::error::UsbResult;
 use crate::endpoint::EndpointAddress;
-use crate::error::UsbResult;
 
 /// USB device class trait.
 ///

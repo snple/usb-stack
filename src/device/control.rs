@@ -5,17 +5,15 @@
 //! keeping the state machine logic bus-agnostic.
 //!
 //! [`ControlIn`] and [`ControlOut`] are short-lived handles passed to
-//! [`UsbClass`](crate::class::UsbClass) callbacks so classes can accept or reject
+//! [`UsbClass`](crate::device::class::UsbClass) callbacks so classes can accept or reject
 //! a control transfer ergonomically.
-
-pub mod request;
-pub use request::{Feature, Recipient, Request, RequestType, StandardRequest};
 
 use core::cmp::min;
 
-use crate::bus::UsbBus;
+use crate::device::bus::UsbBus;
+use crate::device::error::{UsbError, UsbResult};
 use crate::endpoint::EndpointAddress;
-use crate::error::{UsbError, UsbResult};
+use crate::request::Request;
 
 // ─── Internal state ───────────────────────────────────────────────────────────
 
@@ -124,10 +122,7 @@ impl ControlPipe {
             _ => return None,
         }
 
-        let req = match Request::parse(&raw) {
-            Ok(r) => r,
-            Err(_) => return None,
-        };
+        let req = Request::parse(&raw)?;
 
         // A new SETUP always aborts any previous transfer.
         self.static_buf = None;
@@ -332,7 +327,7 @@ impl ControlPipe {
 
 /// Handle for a pending control IN transfer.
 ///
-/// Passed to [`UsbClass::control_in`](crate::class::UsbClass::control_in).
+/// Passed to [`UsbClass::control_in`](crate::device::class::UsbClass::control_in).
 /// Call one of the `accept_*` methods or `reject` to respond; dropping without
 /// calling either passes the request to the next handler.
 pub struct ControlIn<'a, B: UsbBus> {
@@ -374,7 +369,7 @@ impl<'a, B: UsbBus> ControlIn<'a, B> {
 
 /// Handle for a pending control OUT transfer.
 ///
-/// Passed to [`UsbClass::control_out`](crate::class::UsbClass::control_out).
+/// Passed to [`UsbClass::control_out`](crate::device::class::UsbClass::control_out).
 pub struct ControlOut<'a, B: UsbBus> {
     pipe: &'a mut ControlPipe,
     bus: &'a B,

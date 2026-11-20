@@ -52,12 +52,15 @@ pub mod power;
 
 pub use device::{HidDevice, HidSpec, ReportType};
 
-use crate::bus::{InterfaceNumber, UsbBus, UsbBusAllocator};
-use crate::class::UsbClass;
-use crate::control::{ControlIn, ControlOut, Recipient, RequestType, StandardRequest};
-use crate::descriptor::{DescriptorWriter, class_code};
-use crate::endpoint::{EndpointAddress, EndpointIn, EndpointOut, In, Out};
-use crate::error::{UsbError, UsbResult};
+use crate::descriptor::class_code;
+use crate::device::bus::{InterfaceNumber, UsbBus, UsbBusAllocator};
+use crate::device::class::UsbClass;
+use crate::device::control::{ControlIn, ControlOut};
+use crate::device::descriptor::DescriptorWriter;
+use crate::device::endpoint::{EndpointIn, EndpointOut};
+use crate::device::error::{UsbError, UsbResult};
+use crate::endpoint::{EndpointAddress, In, Out};
+use crate::request::{Recipient, RequestType, StandardRequest};
 
 // ─── HID constants ───────────────────────────────────────────────────────────
 
@@ -224,7 +227,7 @@ impl<'a, B: UsbBus, D: HidDevice<B>> HidClass<'a, B, D> {
 
     /// `true` if the request is a class/standard request addressed at this
     /// function's interface.
-    fn is_our_interface(&self, request: &crate::control::Request) -> bool {
+    fn is_our_interface(&self, request: &crate::request::Request) -> bool {
         request.recipient == Recipient::Interface && request.index as u8 == u8::from(self.interface)
     }
 

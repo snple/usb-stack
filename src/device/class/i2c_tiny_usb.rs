@@ -67,11 +67,13 @@
 //! }
 //! ```
 
-use crate::bus::{InterfaceNumber, UsbBus, UsbBusAllocator};
-use crate::class::UsbClass;
-use crate::control::{ControlIn, ControlOut, Recipient, Request, RequestType};
-use crate::descriptor::{DescriptorWriter, class_code};
-use crate::error::UsbResult;
+use crate::descriptor::class_code;
+use crate::device::bus::{InterfaceNumber, UsbBus, UsbBusAllocator};
+use crate::device::class::UsbClass;
+use crate::device::control::{ControlIn, ControlOut};
+use crate::device::descriptor::DescriptorWriter;
+use crate::device::error::UsbResult;
+use crate::request::{Recipient, Request, RequestType};
 
 // ─── Protocol constants ──────────────────────────────────────────────────────
 

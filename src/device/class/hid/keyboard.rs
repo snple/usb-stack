@@ -1,7 +1,7 @@
 //! Boot-compatible keyboard.
 
-use crate::bus::UsbBus;
-use crate::class::hid::{HidDevice, HidSpec, hid_protocol, hid_subclass};
+use crate::device::bus::UsbBus;
+use crate::device::class::hid::{HidDevice, HidSpec, hid_protocol, hid_subclass};
 
 /// Boot keyboard report descriptor: 8-byte input report, 1-byte LED output report.
 pub const KEYBOARD_REPORT_DESCRIPTOR: &[u8] = &[

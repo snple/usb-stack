@@ -1,7 +1,7 @@
 //! Boot-compatible mouse.
 
-use crate::bus::UsbBus;
-use crate::class::hid::{HidDevice, HidSpec, hid_protocol, hid_subclass};
+use crate::device::bus::UsbBus;
+use crate::device::class::hid::{HidDevice, HidSpec, hid_protocol, hid_subclass};
 
 /// Boot mouse report descriptor: 3 buttons, X/Y movement and a wheel, all
 /// relative, in a 4-byte input report.

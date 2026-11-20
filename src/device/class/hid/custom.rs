@@ -1,7 +1,7 @@
 //! HID function with a caller-supplied report descriptor.
 
-use crate::bus::UsbBus;
-use crate::class::hid::{HidDevice, HidSpec, ReportType};
+use crate::device::bus::UsbBus;
+use crate::device::class::hid::{HidDevice, HidSpec, ReportType};
 
 /// Size of the buffer holding the last report written by the host.
 const REPORT_BUFFER_SIZE: usize = 64;

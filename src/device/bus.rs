@@ -18,8 +18,9 @@
 
 use core::cell::{Cell, UnsafeCell};
 
-use crate::endpoint::{Direction, Endpoint, EndpointAddress, EndpointDir, EndpointType};
-use crate::error::{UsbError, UsbResult};
+use crate::device::endpoint::Endpoint;
+use crate::device::error::{UsbError, UsbResult};
+use crate::endpoint::{Direction, EndpointAddress, EndpointDir, EndpointType};
 
 // ─── PollResult ───────────────────────────────────────────────────────────────
 
@@ -177,7 +178,7 @@ impl InterfaceNumber {
     /// Construct an interface number from its raw value.
     ///
     /// Classes normally obtain one from
-    /// [`UsbBusAllocator::interface`](crate::bus::UsbBusAllocator::interface);
+    /// [`UsbBusAllocator::interface`](crate::device::bus::UsbBusAllocator::interface);
     /// this is for protocol tables and tests that carry a fixed number.
     #[inline]
     pub const fn new(number: u8) -> Self {

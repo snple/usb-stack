@@ -1,7 +1,9 @@
-//! USB SETUP packet parser.
+//! USB control requests.
+//!
+//! Both directions share one type: the device side parses the eight bytes it
+//! receives on endpoint 0, the host side builds them for the requests it sends.
 
 use crate::endpoint::{Direction, EndpointAddress};
-use crate::error::{UsbError, UsbResult};
 
 // ─── Request type & recipient ─────────────────────────────────────────────────
 
@@ -110,13 +112,13 @@ pub struct Request {
 
 impl Request {
     /// Parse a SETUP packet from its 8-byte wire encoding.
-    pub fn parse(buf: &[u8]) -> UsbResult<Self> {
-        if buf.len() < 8 {
-            return Err(UsbError::ParseError);
-        }
+    ///
+    /// Returns `None` when fewer than eight bytes are available.
+    pub fn parse(buf: &[u8]) -> Option<Self> {
+        let buf: &[u8; 8] = buf.get(..8)?.try_into().ok()?;
         let bm = buf[0];
         let recipient_raw = bm & 0x1f;
-        Ok(Self {
+        Some(Self {
             direction: Direction::from(bm),
             request_type: RequestType::from(bm),
             recipient: if recipient_raw <= 3 {
@@ -129,6 +131,153 @@ impl Request {
             index: u16::from_le_bytes([buf[4], buf[5]]),
             length: u16::from_le_bytes([buf[6], buf[7]]),
         })
+    }
+
+    /// Build a request from its fields.
+    pub const fn custom(
+        direction: Direction,
+        request_type: RequestType,
+        recipient: Recipient,
+        request: u8,
+        value: u16,
+        index: u16,
+        length: u16,
+    ) -> Self {
+        Self {
+            direction,
+            request_type,
+            recipient,
+            request,
+            value,
+            index,
+            length,
+        }
+    }
+
+    /// The wire encoding of the request.
+    pub const fn to_bytes(self) -> [u8; 8] {
+        let value = self.value.to_le_bytes();
+        let index = self.index.to_le_bytes();
+        let length = self.length.to_le_bytes();
+        [
+            self.direction as u8 | (self.request_type as u8) << 5 | self.recipient as u8,
+            self.request,
+            value[0],
+            value[1],
+            index[0],
+            index[1],
+            length[0],
+            length[1],
+        ]
+    }
+
+    /// A standard request to the device.
+    const fn standard(
+        direction: Direction,
+        request: u8,
+        value: u16,
+        index: u16,
+        length: u16,
+    ) -> Self {
+        Self::custom(
+            direction,
+            RequestType::Standard,
+            Recipient::Device,
+            request,
+            value,
+            index,
+            length,
+        )
+    }
+
+    /// `GET_DESCRIPTOR`, which always reads from the device.
+    pub const fn get_descriptor(kind: u8, index: u8, language: u16, length: u16) -> Self {
+        Self::standard(
+            Direction::In,
+            StandardRequest::GET_DESCRIPTOR,
+            ((kind as u16) << 8) | index as u16,
+            language,
+            length,
+        )
+    }
+
+    /// `SET_ADDRESS`.
+    pub const fn set_address(address: u8) -> Self {
+        Self::standard(
+            Direction::Out,
+            StandardRequest::SET_ADDRESS,
+            address as u16,
+            0,
+            0,
+        )
+    }
+
+    /// `SET_CONFIGURATION`.
+    pub const fn set_configuration(value: u8) -> Self {
+        Self::standard(
+            Direction::Out,
+            StandardRequest::SET_CONFIGURATION,
+            value as u16,
+            0,
+            0,
+        )
+    }
+
+    /// `SET_INTERFACE`.
+    pub const fn set_interface(interface: u8, alternate: u8) -> Self {
+        Self::custom(
+            Direction::Out,
+            RequestType::Standard,
+            Recipient::Interface,
+            StandardRequest::SET_INTERFACE,
+            alternate as u16,
+            interface as u16,
+            0,
+        )
+    }
+
+    /// `GET_STATUS`, which always returns two bytes.
+    pub const fn get_status(recipient: Recipient, index: u16) -> Self {
+        Self::custom(
+            Direction::In,
+            RequestType::Standard,
+            recipient,
+            StandardRequest::GET_STATUS,
+            0,
+            index,
+            2,
+        )
+    }
+
+    /// `CLEAR_FEATURE`.
+    pub const fn clear_feature(recipient: Recipient, feature: u16, index: u16) -> Self {
+        Self::custom(
+            Direction::Out,
+            RequestType::Standard,
+            recipient,
+            StandardRequest::CLEAR_FEATURE,
+            feature,
+            index,
+            0,
+        )
+    }
+
+    /// `SET_FEATURE`.
+    pub const fn set_feature(recipient: Recipient, feature: u16, index: u16) -> Self {
+        Self::custom(
+            Direction::Out,
+            RequestType::Standard,
+            recipient,
+            StandardRequest::SET_FEATURE,
+            feature,
+            index,
+            0,
+        )
+    }
+
+    /// `CLEAR_FEATURE(ENDPOINT_HALT)` for an endpoint.
+    pub const fn clear_halt(endpoint: u8) -> Self {
+        Self::clear_feature(Recipient::Endpoint, Feature::ENDPOINT_HALT, endpoint as u16)
     }
 
     /// Extract (descriptor_type, descriptor_index) from `wValue` as used in

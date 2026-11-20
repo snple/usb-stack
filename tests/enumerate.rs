@@ -8,12 +8,11 @@ use core::cell::{Cell, RefCell};
 use std::collections::VecDeque;
 use std::rc::Rc;
 
-use usb_stack::class::cdc_acm::CdcAcm;
 use usb_stack::descriptor::descriptor_type;
-use usb_stack::device::{DeviceState, UsbDevice, UsbDeviceBuilder};
-use usb_stack::{
-    Direction, EndpointAddress, EndpointType, PollResult, UsbBus, UsbBusAllocator, UsbError,
-    UsbResult,
+use usb_stack::device::class::cdc_acm::CdcAcm;
+use usb_stack::device::{
+    DeviceState, Direction, EndpointAddress, EndpointType, PollResult, UsbBus, UsbBusAllocator,
+    UsbDevice, UsbDeviceBuilder, UsbError, UsbResult,
 };
 
 // ─── Mock bus ────────────────────────────────────────────────────────────────

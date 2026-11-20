@@ -6,14 +6,14 @@
 
 use core::cmp::min;
 
-use crate::bus::{InterfaceNumber, PollResult, StringIndex, UsbBus, UsbBusAllocator};
-use crate::class::UsbClass;
-use crate::control::{
-    ControlIn, ControlOut, ControlPipe, Feature, Recipient, Request, RequestType, StandardRequest,
-};
-use crate::descriptor::{DescriptorWriter, descriptor_type, lang_id};
+use crate::descriptor::{descriptor_type, lang_id};
+use crate::device::bus::{InterfaceNumber, PollResult, StringIndex, UsbBus, UsbBusAllocator};
+use crate::device::class::UsbClass;
+use crate::device::control::{ControlIn, ControlOut, ControlPipe};
+use crate::device::descriptor::DescriptorWriter;
+use crate::device::error::UsbResult;
 use crate::endpoint::{Direction, EndpointAddress, EndpointType};
-use crate::error::UsbResult;
+use crate::request::{Feature, Recipient, Request, RequestType, StandardRequest};
 
 // ─── DeviceState ─────────────────────────────────────────────────────────────
 
